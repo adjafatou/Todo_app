@@ -239,6 +239,13 @@ function Home() {
   const deleteTask = async (id) => {
     console.log(id);
 
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
+    if (!confirmed) {
+      return;
+    }
+
     try {
       const userEmail = window.localStorage.getItem("userEmail");
       const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
@@ -253,15 +260,20 @@ function Home() {
     setDate(null);
     setSelectedUser("");
     setShowFields(false);
-
-    //update for the user
   };
 
   const deleteUser = async (email) => {
     if (userList.find((user) => user.email === email && user.isAdmin)) {
-      const errorMessage = "this user is an admin. you can't delete him";
+      const errorMessage = "This user is an admin. You can't delete him.";
       setErrorMessage(errorMessage);
       alert(errorMessage);
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
+    if (!confirmed) {
       return;
     }
 
@@ -269,9 +281,9 @@ function Home() {
     setUserList(updatedUserList);
     const userDoc = doc(firestore, `Users/${email}`);
     await deleteDoc(userDoc);
-    const errorMessage = "User deleted successfully";
-    setErrorMessage(errorMessage);
-    alert(errorMessage);
+    const successMessage = "User deleted successfully";
+    setErrorMessage(successMessage);
+    alert(successMessage);
   };
 
   const editTask = (index) => {
@@ -510,9 +522,7 @@ function Home() {
                 ))}
                 <option value="">Not Assigned</option>
               </select>
-              <div>
-                <input type="file" onChange={handleDocumentUpload} multiple />
-              </div>
+
               <div
                 onClick={handleSubmit}
                 style={{
@@ -555,6 +565,9 @@ function Home() {
               <table
                 style={{
                   width: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  // display: "r",
                 }}
               >
                 {todos.map((todo, index) => {
@@ -631,23 +644,6 @@ function Home() {
                               <div>Assigned: Not Assigned</div>
                             )}
                           </div>
-                          {todo.documents ? (
-                            <div
-                              style={{ color: "#ffff00", cursor: "pointer" }}
-                            >
-                              {" "}
-                              Documents :{" "}
-                              <ul onClick={handleDocumentClick}>
-                                {Array.from(todo.documents).map(
-                                  (file, index) => (
-                                    <li key={index}>{file}</li>
-                                  )
-                                )}
-                              </ul>{" "}
-                            </div>
-                          ) : (
-                            <div> Documents : None</div>
-                          )}
 
                           {/* <div>Assigné: {isAssigned ? '' : 'Non'}</div> */}
                         </div>
