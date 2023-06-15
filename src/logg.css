@@ -1,0 +1,158 @@
+.contain{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    height: 97vh;
+    margin: auto;
+    /* border-radius: 10px; */
+   background:  linear-gradient(-45deg, rgb(163, 222, 220), #fff);
+  }
+.form-container {
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 50%; 
+    left: 20px; 
+    transform: translateX(-50%); 
+  }
+  .form-container h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #583672;
+  }
+
+  .contain .form-container .containform a {
+    color: red;
+    background: none;
+    cursor: pointer;
+  }
+  
+
+
+  .contain .form-container .containform a:hover {
+   color: indianred;
+  }
+  
+  .form-container input[type="email"],
+  .form-container input[type="password"] {
+    border: none;
+    width: 100%;
+    margin: 15px 0px;
+    border-bottom: 1px solid #4f30677d;
+    padding: 7px 9px;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    color: rgb(163, 222, 220);
+  }
+  
+  .form-container button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: block;
+    margin: auto;
+    margin-top: 30px;
+    background: #583672;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .form-container button:hover {
+    background-color: #482c5c;
+  }
+  
+  .form-container h6 {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .form-container p {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #583672;
+  }
+  
+ .form-container a {
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    color: #fff;
+    background-color: #583672;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+  }
+  
+  .form-container a:hover {
+    background-color: #482c5c;
+  }
+  
+  .right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #fff;
+    position: relative;
+    /* transform: translateY(150%); */
+  
+  }
+  .right .right-inductor {
+    position: absolute;
+    top: -500px;
+    left:80%;
+    transform: translateX(-250%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  img{
+    width: 100px;
+    border-radius: 100px;
+  }
+  .right-text {
+    text-align: center;
+    margin-bottom: 40px;
+    /* left:100px; */
+    transform: translateY(-40%);
+  }
+  
+  .right-text h2 {
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: black;  
+  }
+  
+  .right-text h5 {
+    font-size: 18px;
+    font-weight: 400;
+    color: #482c5c;
+  }
+  
+  .right-inductor {
+    position: absolute;
+    bottom: 20px;
+  }
+  
+  .logo {
+    width: 100px;
+    border-radius: 100px;
+    /* transform: translateX(225%); */
+
+  }
+  
+  .images{
+    transform: translateX(-525%);
+ /* width: 200px; Largeur souhaitée de votre image agrandie */
+  /* height: 200px; Hauteur souhaitée de votre image agrandie */
+  }

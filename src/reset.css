@@ -1,0 +1,57 @@
+.component {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background:  linear-gradient(-45deg, rgb(163, 222, 220), #fff);
+
+  }
+
+  .component h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #583672;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+  }
+  
+  .form-container1 {
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+     
+
+  }
+  .form-container1 input[type="email"] {
+    border: none;
+    width: 100%;
+    margin: 15px 0px;
+    border-bottom: 1px solid #4f30677d;
+    padding: 7px 9px;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    color: #583672;
+  }
+  
+  .form-container1 button {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    display: block;
+    margin: auto;
+    margin-top: 30px;
+    background: #583672;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .form-container1 button:hover {
+    background-color: #482c5c;
+  }
+  
