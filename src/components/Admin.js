@@ -231,9 +231,9 @@ function Home() {
     const _doc1 = doc(firestore, `Todos/${userEmail}/List/${id}`);
     setDoc(_doc1, updatedTodos[index]);
     //Update for user
-    const user = userEmail;
-    const _admindoc = doc(firestore, `Todos/${user}/List/${id}`);
-    setDoc(_admindoc, updatedTodos[index]);
+    // const user = userEmail;
+    // const _admindoc = doc(firestore, `Todos/${user}/List/${id}`);
+    // setDoc(_admindoc, updatedTodos[index]);
   };
 
   const deleteTask = async (id) => {
@@ -251,6 +251,12 @@ function Home() {
       const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
       console.log(`Todos/${userEmail}/List/${id}`);
       await deleteDoc(_doc);
+
+      if (selectedUser) {
+        const assignedUserDoc = doc(firestore, `Todos/${userEmail}/List/${id}`);
+        await deleteDoc(assignedUserDoc);
+      }
+
       fnfetchList();
     } catch (error) {
       console.log(error);
@@ -366,7 +372,6 @@ function Home() {
               alignItems: "center",
               gap: 10,
               cursor: "pointer",
-              // backgroundColor: "#e0e0e022",
             }}
           >
             signout
@@ -509,7 +514,6 @@ function Home() {
                   backgroundColor: "#e0e0e022",
                 }}
               />
-
               <select
                 value={selectedUser}
                 onChange={(e) => setSelectedUser(e.target.value)}
@@ -520,7 +524,7 @@ function Home() {
                     {user.email}
                   </option>
                 ))}
-                <option value="">Not Assigned</option>
+                <option value=" ">Not Assigned</option>
               </select>
 
               <div

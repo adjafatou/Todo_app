@@ -142,21 +142,31 @@ function Home() {
   };
 
   const completeTask = (index) => {
+    const userEmail = window.localStorage.getItem("userEmail");
+    const id = todos[index].id;
+    const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
+
     const updatedTodos = todos.map((todo, i) => {
       if (i === index) {
         const completed = !todo.completed;
         const progress = completed ? 100 : 0;
-        return { ...todo, completed, progress };
+        const updatedTodo = { ...todo, completed, progress };
+        setDoc(_doc, updatedTodo, { merge: true });
+        return updatedTodo;
       }
       return todo;
     });
 
     setTodos(updatedTodos);
 
-    const userEmail = window.localStorage.getItem("userEmail");
-    const id = todos[index].id;
-    const _doc1 = doc(firestore, `Todos/${userEmail}/List/${id}`);
-    setDoc(_doc1, updatedTodos[index]);
+    const adminDocData = {
+      completed: updatedTodos[index].completed,
+      progress: updatedTodos[index].progress,
+    };
+
+    const adminEmail = "fatou12@gmail.com";
+    const _adminDoc = doc(firestore, `Todos/${adminEmail}/List/${id}`);
+    setDoc(_adminDoc, adminDocData, { merge: true });
   };
 
   const deleteTask = async (id) => {
@@ -178,7 +188,7 @@ function Home() {
   const editTask = (index) => {
     const todo = todos[index];
     setState(todo.task);
-    setDate(todo.date);
+    setDate(null);
     setEditIndex(index);
     setShowFields(true);
     setSelectedUser(todo.assignedTo);
@@ -224,7 +234,18 @@ function Home() {
           <div style={{ fontSize: 10 }}>{signedInUser}</div>
           <button
             onClick={() => signOut()}
-            style={{ cursor: "pointer", height: "fit" }}
+            style={{
+              outline: "2px solid #e0e0e022",
+              borderRadius: 10,
+              paddingBlock: 5,
+              marginBlock: 15,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+              cursor: "pointer",
+            }}
           >
             signout
           </button>
@@ -409,19 +430,6 @@ function Home() {
                             <div>Assigned: Not Assigned</div>
                           )}
                         </div>
-                        {todo.documents ? (
-                          <div>
-                            {" "}
-                            Documents :{" "}
-                            <ul>
-                              {Array.from(todo.documents).map((file, index) => (
-                                <li key={index}>{file}</li>
-                              ))}
-                            </ul>{" "}
-                          </div>
-                        ) : (
-                          <div> Documents : None</div>
-                        )}
                       </div>
 
                       <div
