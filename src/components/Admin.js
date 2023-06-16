@@ -149,6 +149,8 @@ function Home() {
 
       fnfetchList();
     } else {
+      await updateAssignedUser(editIndex, selectedUser);
+      setEditIndex(-1);
       const userEmail = window.localStorage.getItem("userEmail");
       const id = todos[editIndex].id;
       const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
@@ -292,17 +294,31 @@ function Home() {
     alert(successMessage);
   };
 
-  const editTask = (index) => {
+  const editTask = (index, selectedUser) => {
     const todo = todos[index];
+
+    todo.assignedTo = selectedUser ? selectedUser : "Not Assigned";
 
     setState("");
     setDate(null);
-    setSelectedUser("");
     setEditIndex(index);
     setShowFields(true);
-    // setIsEditing(true);
+    setDate(null);
+    setSelectedUser(todo.assignedTo);
     setButtonText("Update");
     setShowEditForm(true);
+  };
+
+  const updateAssignedUser = async (index, assignedUser) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].assignedTo = assignedUser;
+
+    setTodos(updatedTodos);
+
+    const userEmail = window.localStorage.getItem("userEmail");
+    const id = todos[index].id;
+    const todoDoc = doc(firestore, `Todos/${userEmail}/List/${id}`);
+    await setDoc(todoDoc, { assignedTo: assignedUser }, { merge: true });
   };
 
   async function saveEdit(id) {

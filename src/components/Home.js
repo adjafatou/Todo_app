@@ -67,6 +67,22 @@ function Home() {
     fetchList();
   }, []);
 
+  const updateTaskProgress = async (index, progress) => {
+    const updatedTodos = todos.map((todo, i) => {
+      if (i === index) {
+        return { ...todo, progress };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
+
+    const userEmail = window.localStorage.getItem("userEmail");
+    const id = todos[index].id;
+    const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
+    setDoc(_doc, { progress }, { merge: true });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (state.trim().length === 0) {
@@ -423,6 +439,15 @@ function Home() {
                             ).toLocaleDateString()}`}{" "}
                         </div>
                         <div>Progress: {todo.progress}%</div>
+                        <input
+                          type="range"
+                          min={0}
+                          max={100}
+                          value={todo.progress}
+                          onChange={(e) =>
+                            updateTaskProgress(index, e.target.value)
+                          }
+                        />
                         <div>
                           {todo.assignedTo ? (
                             <div>Assigned: Yes </div>
