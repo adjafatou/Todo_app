@@ -23,6 +23,8 @@ function Home() {
     auth
       .signOut()
       .then(() => {
+        window.localStorage.setItem("userEmail", "");
+
         console.log("User signed out successfully");
         navigate("/log");
       })
@@ -53,7 +55,10 @@ function Home() {
 
   async function fetchList() {
     const userEmail = window.localStorage.getItem("userEmail");
-
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const _collection = collection(firestore, `Todos/${userEmail}/List`);
 
     const data = (await getDocs(_collection)).docs.map((item) => item.data());
@@ -78,6 +83,10 @@ function Home() {
     setTodos(updatedTodos);
 
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const id = todos[index].id;
     const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
     setDoc(_doc, { progress }, { merge: true });
@@ -102,6 +111,9 @@ function Home() {
       setTodos([...todos, newTask]);
 
       const userEmail = window.localStorage.getItem("userEmail");
+      if (!userEmail || userEmail.length < 1) {
+        navigate("/log");
+      }
       const _doc = doc(firestore, `Todos/${userEmail}/List/${newTask.id}`);
       const data = {
         id: newTask.id,
@@ -126,6 +138,9 @@ function Home() {
       setTodos(updatedTodos);
 
       const userEmail = window.localStorage.getItem("userEmail");
+      if (!userEmail || userEmail.length < 1) {
+        navigate("/log");
+      }
       const id = todos[editIndex].id;
       const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
       const data = {
@@ -159,6 +174,10 @@ function Home() {
 
   const completeTask = (index) => {
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const id = todos[index].id;
     const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
 
@@ -180,7 +199,7 @@ function Home() {
       progress: updatedTodos[index].progress,
     };
 
-    const adminEmail = "fatou12@gmail.com";
+    const adminEmail = "fatou02@gmail.com";
     const _adminDoc = doc(firestore, `Todos/${adminEmail}/List/${id}`);
     setDoc(_adminDoc, adminDocData, { merge: true });
   };
@@ -190,6 +209,10 @@ function Home() {
     // setTodos(updatedTodos);
     console.log(id);
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
     console.log(_doc);
 
@@ -211,23 +234,69 @@ function Home() {
     setButtonText("Update");
     setShowEditForm(true);
   };
-
-  return (
-    <div
-      className="first home-page"
-      style={{ color: "#e0e0e0", paddingInline: "30%" }}
-    >
+  if (signedInUser) {
+    return (
       <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+        className="first home-page"
+        style={{ color: "#e0e0e0", paddingInline: "30%" }}
       >
-        <h1
+        <div
           style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h1
+            style={{
+              color: "white",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <ion-icon name="list-outline"></ion-icon>TodoList
+          </h1>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <div style={{ fontSize: 10 }}>{signedInUser}</div>
+            <button
+              onClick={() => signOut()}
+              style={{
+                outline: "2px solid #e0e0e022",
+                borderRadius: 10,
+                paddingBlock: 5,
+                marginBlock: 15,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 10,
+                cursor: "pointer",
+              }}
+            >
+              signout
+            </button>
+          </div>
+        </div>
+        <div
+          style={{
+            outline: "2px solid #e0e0e022",
+            borderRadius: 10,
             color: "white",
+            paddingBlock: 5,
+            marginBlock: 15,
             display: "flex",
             flexDirection: "row",
             justifyContent: "center",
@@ -235,274 +304,230 @@ function Home() {
             gap: 10,
           }}
         >
-          <ion-icon name="list-outline"></ion-icon>TodoList
-        </h1>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 5,
-          }}
-        >
-          <div style={{ fontSize: 10 }}>{signedInUser}</div>
-          <button
-            onClick={() => signOut()}
+          <div
+            onClick={() => setShowFields(true)}
             style={{
-              outline: "2px solid #e0e0e022",
               borderRadius: 10,
-              paddingBlock: 5,
-              marginBlock: 15,
+              backgroundColor: "#f276a1",
+              height: 30,
+              cursor: "pointer",
+              width: 30,
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              gap: 10,
-              cursor: "pointer",
             }}
           >
-            signout
-          </button>
+            <ion-icon name="add-outline" color={"#181820"}></ion-icon>
+          </div>{" "}
+          <div onClick={() => setShowFields(true)}>Add a task</div>{" "}
         </div>
-      </div>
-      <div
-        style={{
-          outline: "2px solid #e0e0e022",
-          borderRadius: 10,
-          color: "white",
-          paddingBlock: 5,
-          marginBlock: 15,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <div
-          onClick={() => setShowFields(true)}
-          style={{
-            borderRadius: 10,
-            backgroundColor: "#f276a1",
-            height: 30,
-            cursor: "pointer",
-            width: 30,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ion-icon name="add-outline" color={"#181820"}></ion-icon>
-        </div>{" "}
-        <div onClick={() => setShowFields(true)}>Add a task</div>{" "}
-      </div>
-      {showFields && (
-        <div className="second">
-          <form onSubmit={handleSubmit}>
-            <input
-              style={{
-                borderRadius: 10,
-                backgroundColor: "#e0e0e022",
-                height: 15,
-                cursor: "pointer",
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                borderColor: "#e0e0e055",
-                marginBlock: 10,
-                color: "white",
-              }}
-              type="text"
-              placeholder="What needs to be done"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-            />
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 10,
-                gap: 15,
-              }}
-            >
-              <DatePicker
-                className="custom-datepicker"
-                selected={date}
-                onChange={(date) => setDate(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Select a date"
+        {showFields && (
+          <div className="second">
+            <form onSubmit={handleSubmit}>
+              <input
                 style={{
+                  borderRadius: 10,
                   backgroundColor: "#e0e0e022",
+                  height: 15,
+                  cursor: "pointer",
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderColor: "#e0e0e055",
+                  marginBlock: 10,
+                  color: "white",
                 }}
+                type="text"
+                placeholder="What needs to be done"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
               />
 
               <div
-                onClick={handleSubmit}
                 style={{
-                  cursor: "pointer",
-                  backgroundColor: "#7fffd4",
-                  borderRadius: 3,
-                  paddingBlock: 3,
-                  color: "black",
-                  paddingInline: 20,
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 10,
+                  gap: 15,
                 }}
               >
-                {editIndex === -1 ? "Add" : "Update"}
+                <DatePicker
+                  className="custom-datepicker"
+                  selected={date}
+                  onChange={(date) => setDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Select a date"
+                  style={{
+                    backgroundColor: "#e0e0e022",
+                  }}
+                />
+
+                <div
+                  onClick={handleSubmit}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor: "#7fffd4",
+                    borderRadius: 3,
+                    paddingBlock: 3,
+                    color: "black",
+                    paddingInline: 20,
+                  }}
+                >
+                  {editIndex === -1 ? "Add" : "Update"}
+                </div>
+
+                <div
+                  onClick={() => setShowFields(false)}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor: "#ff6347",
+                    borderRadius: 3,
+                    paddingBlock: 3,
+                    color: "black",
+                    paddingInline: 20,
+                  }}
+                >
+                  Cancel
+                </div>
               </div>
+            </form>
+          </div>
+        )}
 
-              <div
-                onClick={() => setShowFields(false)}
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: "#ff6347",
-                  borderRadius: 3,
-                  paddingBlock: 3,
-                  color: "black",
-                  paddingInline: 20,
-                }}
-              >
-                Cancel
-              </div>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="" style={{}}>
-        <>
-          <h3>Tasks - {todos.length}</h3>
-          {todos.length === 0 ? (
-            <h6>There's nothing to do :(</h6>
-          ) : (
-            <div>
-              <table
-                style={{
-                  width: 100,
-                }}
-              >
-                {todos.map((todo, index) => (
-                  <tr
-                    style={{
-                      backgroundColor: "#e0e0e011",
-                      borderRadius: 20,
-                      marginBottom: 5,
-                      paddingBlock: 5,
-                      paddingInline: 20,
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      wordWrap: "break-word",
-                    }}
-                    key={index}
-                  >
-                    <div
+        <div className="" style={{}}>
+          <>
+            <h3>Tasks - {todos.length}</h3>
+            {todos.length === 0 ? (
+              <h6>There's nothing to do :(</h6>
+            ) : (
+              <div>
+                <table
+                  style={{
+                    width: 100,
+                  }}
+                >
+                  {todos.map((todo, index) => (
+                    <tr
                       style={{
-                        width: 50,
-                        height: 50,
-                        display: "block",
-                      }}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={todo.completed}
-                        onChange={() => completeTask(index)}
-                        style={{ color: "#f276a1" }}
-                      />
-                    </div>
-
-                    <div
-                      style={{
+                        backgroundColor: "#e0e0e011",
+                        borderRadius: 20,
+                        marginBottom: 5,
+                        paddingBlock: 5,
+                        paddingInline: 20,
                         display: "flex",
                         flexDirection: "row",
                         alignItems: "center",
-                        justifyContent: "space-between",
-                        width: "100%",
-                        gap: 20,
+                        wordWrap: "break-word",
                       }}
+                      key={index}
                     >
-                      <div>
-                        <div style={{ fontSize: 20, width: "14em" }}>
-                          {todo.task}
-                        </div>
-                        <div style={{ color: "green" }}>
-                          {todo.date &&
-                            `${new Date(
-                              todo.date.toDate()
-                            ).toLocaleDateString()}`}{" "}
-                        </div>
-                        <div>Progress: {todo.progress}%</div>
+                      <div
+                        style={{
+                          width: 50,
+                          height: 50,
+                          display: "block",
+                        }}
+                      >
                         <input
-                          type="range"
-                          min={0}
-                          max={100}
-                          value={todo.progress}
-                          onChange={(e) =>
-                            updateTaskProgress(index, e.target.value)
-                          }
+                          type="checkbox"
+                          checked={todo.completed}
+                          onChange={() => completeTask(index)}
+                          style={{ color: "#f276a1" }}
                         />
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          width: "100%",
+                          gap: 20,
+                        }}
+                      >
                         <div>
-                          {todo.assignedTo ? (
-                            <div>Assigned: Yes </div>
-                          ) : (
-                            <div>Assigned: Not Assigned</div>
-                          )}
+                          <div style={{ fontSize: 20, width: "14em" }}>
+                            {todo.task}
+                          </div>
+                          <div style={{ color: "green" }}>
+                            {todo.date &&
+                              `${new Date(
+                                todo.date.toDate()
+                              ).toLocaleDateString()}`}{" "}
+                          </div>
+                          <div>Progress: {todo.progress}%</div>
+                          <input
+                            type="range"
+                            min={0}
+                            max={100}
+                            value={todo.progress}
+                            onChange={(e) =>
+                              updateTaskProgress(index, e.target.value)
+                            }
+                          />
+                          <div>
+                            {todo.assignedTo ? (
+                              <div>Assigned: Yes </div>
+                            ) : (
+                              <div>Assigned: Not Assigned</div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div
+                          onClick={() => editTask(index)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <table
+                            style={{
+                              width: 100,
+                            }}
+                          >
+                            <tr>
+                              <td
+                                style={{
+                                  display: "block",
+                                  margin: 10,
+                                }}
+                              >
+                                <ion-icon
+                                  name="create-outline"
+                                  size="large"
+                                  color={"#181820"}
+                                ></ion-icon>
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+
+                        <div
+                          onClick={() => deleteTask(todo.id)}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <ion-icon
+                            name="trash-outline"
+                            size="large"
+                            color={"#181820"}
+                          ></ion-icon>
                         </div>
                       </div>
-
-                      <div
-                        onClick={() => editTask(index)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <table
-                          style={{
-                            width: 100,
-                          }}
-                        >
-                          <tr>
-                            <td
-                              style={{
-                                display: "block",
-                                margin: 10,
-                              }}
-                            >
-                              <ion-icon
-                                name="create-outline"
-                                size="large"
-                                color={"#181820"}
-                              ></ion-icon>
-                            </td>
-                          </tr>
-                        </table>
-                      </div>
-
-                      <div
-                        onClick={() => deleteTask(todo.id)}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <ion-icon
-                          name="trash-outline"
-                          size="large"
-                          color={"#181820"}
-                        ></ion-icon>
-                      </div>
-                    </div>
-                  </tr>
-                ))}
-              </table>
-            </div>
-          )}
-        </>
+                    </tr>
+                  ))}
+                </table>
+              </div>
+            )}
+          </>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return <div>hi</div>;
+  }
 }
-
 export default Home;

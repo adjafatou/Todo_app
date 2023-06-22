@@ -32,9 +32,15 @@ function Login() {
 
       const isAdmin = logininfo.isAdmin;
       if (isAdmin) {
-        navigate("/admin");
+        navigate("/pageAdmin");
       } else {
-        navigate("/");
+        const isApproved = logininfo.isApproved;
+
+        if (isApproved) {
+          navigate("/");
+        } else {
+          setErrorMessage("this account is not approved");
+        }
       }
     } catch (error) {
       console.log(error.message);
@@ -78,9 +84,9 @@ function Login() {
         </div>
       </div>
       {/* <div className="images">
-        <img src="todo2.png" alt="todo2" className="logo" />
-        <img src="imagetodo.png" alt="todo2" className="logo" />
-      </div> */}
+      <img src="todo2.png" alt="todo2" className="logo" />
+      <img src="imagetodo.png" alt="todo2" className="logo" />
+    </div> */}
     </div>
   );
 }

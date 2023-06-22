@@ -10,7 +10,7 @@ import Log from "./components/Log";
 import Inscription from "./components/Inscription";
 import Admin from "./components/Admin";
 import Pageadmin from "./components/Pageadmin";
-import Reset from "./components/Reset";
+import Autorise from "./components/Autorise";
 
 function App() {
   const router = createBrowserRouter(
@@ -21,7 +21,7 @@ function App() {
         <Route path="admin" element={<Admin />} />
         <Route path="pageadmin" element={<Pageadmin />} />
         <Route path="inscription" element={<Inscription />} />
-        <Route path="reset" element={<Reset />} />
+        <Route path="autorise" element={<Autorise />} />
       </Route>
     )
   );

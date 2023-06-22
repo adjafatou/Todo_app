@@ -68,6 +68,7 @@ function Register() {
         name: registerName,
         firstname: registerFirstname,
         isAdmin: false,
+        isApproved: false,
       };
 
       await setDoc(userDocRef, data);

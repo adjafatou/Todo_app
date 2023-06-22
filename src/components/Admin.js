@@ -75,6 +75,10 @@ function Home() {
 
   async function fnfetchList() {
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
 
     const _collection = collection(firestore, `Todos/${userEmail}/List`);
 
@@ -99,6 +103,10 @@ function Home() {
     setTodos(updatedTodos);
 
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const id = todos[index].id;
     const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
     setDoc(_doc, { progress }, { merge: true });
@@ -123,6 +131,10 @@ function Home() {
         documents: attachedDocuments,
       };
       const userEmail = window.localStorage.getItem("userEmail");
+      if (!userEmail || userEmail.length < 1) {
+        navigate("/log");
+        return;
+      }
       const userDoc = doc(firestore, `Todos/${userEmail}/List/${id}`);
       const userData = {
         id: newTask.id,
@@ -152,6 +164,10 @@ function Home() {
       await updateAssignedUser(editIndex, selectedUser);
       setEditIndex(-1);
       const userEmail = window.localStorage.getItem("userEmail");
+      if (!userEmail || userEmail.length < 1) {
+        navigate("/log");
+        return;
+      }
       const id = todos[editIndex].id;
       const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
       const data = {
@@ -169,7 +185,7 @@ function Home() {
     setSelectedUser("");
     setShowFields(false);
     setButtonText("Add");
-    setAttachedDocuments([]); // Réinitialiser la liste des documents attachés
+    setAttachedDocuments([]);
   };
 
   const uuidv4 = () => {
@@ -214,6 +230,10 @@ function Home() {
 
   const completeTask = (index) => {
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const id = todos[index].id;
     const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
 
@@ -250,6 +270,10 @@ function Home() {
 
     try {
       const userEmail = window.localStorage.getItem("userEmail");
+      if (!userEmail || userEmail.length < 1) {
+        navigate("/log");
+        return;
+      }
       const _doc = doc(firestore, `Todos/${userEmail}/List/${id}`);
       console.log(`Todos/${userEmail}/List/${id}`);
       await deleteDoc(_doc);
@@ -316,6 +340,10 @@ function Home() {
     setTodos(updatedTodos);
 
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const id = todos[index].id;
     const todoDoc = doc(firestore, `Todos/${userEmail}/List/${id}`);
     await setDoc(todoDoc, { assignedTo: assignedUser }, { merge: true });
@@ -332,29 +360,139 @@ function Home() {
     };
 
     const userEmail = window.localStorage.getItem("userEmail");
+    if (!userEmail || userEmail.length < 1) {
+      navigate("/log");
+      return;
+    }
     const _doc2 = doc(firestore, `Todos/${userEmail}/List/${todo.id}`);
     await setDoc(_doc2, update, { merge: true });
 
     setShowFields(false);
     fnfetchList();
   }
-
-  return (
-    <div
-      className="first home-page"
-      style={{ color: "#e0e0e0", paddingInline: "30%" }}
-    >
+  if (signedInUser) {
+    return (
       <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+        className="first home-page"
+        style={{ color: "#e0e0e0", paddingInline: "30%" }}
       >
-        <h1
+        <div
           style={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <h1
+            style={{
+              color: "white",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <ion-icon name="list-outline"></ion-icon>TodoList
+          </h1>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <div style={{ fontSize: 10 }}>{signedInUser}</div>
+            <button
+              onClick={() => signOut()}
+              style={{
+                outline: "2px solid #e0e0e022",
+                borderRadius: 10,
+                paddingBlock: 5,
+                marginBlock: 15,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 10,
+                cursor: "pointer",
+              }}
+            >
+              signout
+            </button>
+          </div>
+        </div>
+        <div
+          onClick={handleIconClick}
+          style={{
+            outline: "2px solid #e0e0e022",
+            borderRadius: 10,
             color: "white",
+            paddingBlock: 5,
+            marginBlock: 15,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 10,
+            cursor: "pointer",
+          }}
+        >
+          <ion-icon name="ellipsis-horizontal-sharp"></ion-icon> View the
+          users's list
+        </div>
+        {showUserList && (
+          <div style={{ fontSize: 20, width: "27em" }}>
+            {userList.map((user) => (
+              <div
+                style={{
+                  backgroundColor: "#e0e0e011",
+                  borderRadius: 20,
+                  marginBottom: 5,
+                  paddingBlock: 5,
+                  paddingInline: 20,
+                  display: "flex",
+                  flexDirection: "row",
+                  alignItems: "center",
+                  wordWrap: "break-word",
+                  justifyContent: "center",
+                  gap: 20,
+                }}
+                key={user.email}
+              >
+                <div style={{}} key={user.email} value={user.email}>
+                  {user.email}
+                </div>
+                <div
+                  onClick={() => deleteUser(user.email)}
+                  style={{
+                    cursor: "pointer",
+                    position: "relative",
+                    marginLeft: 280,
+                  }}
+                >
+                  <ion-icon
+                    name="trash-outline"
+                    size="large"
+                    color={"white"}
+                  ></ion-icon>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div
+          style={{
+            outline: "2px solid #e0e0e022",
+            borderRadius: 10,
+            color: "white",
+            paddingBlock: 5,
+            marginBlock: 15,
             display: "flex",
             flexDirection: "row",
             justifyContent: "center",
@@ -362,359 +500,256 @@ function Home() {
             gap: 10,
           }}
         >
-          <ion-icon name="list-outline"></ion-icon>TodoList
-        </h1>
-
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 5,
-          }}
-        >
-          <div style={{ fontSize: 10 }}>{signedInUser}</div>
-          <button
-            onClick={() => signOut()}
+          <div
+            onClick={() => setShowFields(true)}
             style={{
-              outline: "2px solid #e0e0e022",
               borderRadius: 10,
-              paddingBlock: 5,
-              marginBlock: 15,
+              backgroundColor: "#f276a1",
+              height: 30,
+              cursor: "pointer",
+              width: 30,
               display: "flex",
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              gap: 10,
-              cursor: "pointer",
             }}
           >
-            signout
-          </button>
+            <ion-icon name="add-outline" color={"#181820"}></ion-icon>
+          </div>{" "}
+          <div onClick={() => setShowFields(true)}>Add a task</div>{" "}
         </div>
-      </div>
-      <div
-        onClick={handleIconClick}
-        style={{
-          outline: "2px solid #e0e0e022",
-          borderRadius: 10,
-          color: "white",
-          paddingBlock: 5,
-          marginBlock: 15,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-          cursor: "pointer",
-        }}
-      >
-        <ion-icon name="ellipsis-horizontal-sharp"></ion-icon> View the users's
-        list
-      </div>
-      {showUserList && (
-        <div style={{ fontSize: 20, width: "27em" }}>
-          {userList.map((user) => (
-            <div
-              style={{
-                backgroundColor: "#e0e0e011",
-                borderRadius: 20,
-                marginBottom: 5,
-                paddingBlock: 5,
-                paddingInline: 20,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                wordWrap: "break-word",
-                justifyContent: "center",
-                gap: 20,
-              }}
-              key={user.email}
-            >
-              <div style={{}} key={user.email} value={user.email}>
-                {user.email}
-              </div>
-              <div
-                onClick={() => deleteUser(user.email)}
+        {showFields && (
+          <div className="second">
+            <form onSubmit={handleSubmit}>
+              <input
                 style={{
-                  cursor: "pointer",
-                  position: "relative",
-                  marginLeft: 280,
-                }}
-              >
-                <ion-icon
-                  name="trash-outline"
-                  size="large"
-                  color={"white"}
-                ></ion-icon>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div
-        style={{
-          outline: "2px solid #e0e0e022",
-          borderRadius: 10,
-          color: "white",
-          paddingBlock: 5,
-          marginBlock: 15,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <div
-          onClick={() => setShowFields(true)}
-          style={{
-            borderRadius: 10,
-            backgroundColor: "#f276a1",
-            height: 30,
-            cursor: "pointer",
-            width: 30,
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ion-icon name="add-outline" color={"#181820"}></ion-icon>
-        </div>{" "}
-        <div onClick={() => setShowFields(true)}>Add a task</div>{" "}
-      </div>
-      {showFields && (
-        <div className="second">
-          <form onSubmit={handleSubmit}>
-            <input
-              style={{
-                borderRadius: 10,
-                backgroundColor: "#e0e0e022",
-                height: 15,
-                cursor: "pointer",
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                borderColor: "#e0e0e055",
-                marginBlock: 10,
-                color: "white",
-              }}
-              type="text"
-              placeholder="What needs to be done"
-              value={state}
-              onChange={(e) => setState(e.target.value)}
-            />
-
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 10,
-                gap: 15,
-              }}
-            >
-              <DatePicker
-                className="custom-datepicker"
-                selected={date}
-                onChange={(date) => setDate(date)}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Select a date"
-                style={{
+                  borderRadius: 10,
                   backgroundColor: "#e0e0e022",
-                }}
-              />
-              <select
-                value={selectedUser}
-                onChange={(e) => setSelectedUser(e.target.value)}
-              >
-                <option value="">Assign To</option>
-                {userList.map((user) => (
-                  <option key={user.email} value={user.email}>
-                    {user.email}
-                  </option>
-                ))}
-                <option value=" ">Not Assigned</option>
-              </select>
-
-              <div
-                onClick={handleSubmit}
-                style={{
+                  height: 15,
                   cursor: "pointer",
-                  backgroundColor: "#7fffd4",
-                  borderRadius: 3,
-                  paddingBlock: 3,
-                  color: "black",
-                  paddingInline: 20,
-                }}
-              >
-                {editIndex === -1 ? "Add" : "Update"}
-              </div>
-
-              <div
-                onClick={() => setShowFields(false)}
-                style={{
-                  cursor: "pointer",
-                  backgroundColor: "#ff6347",
-                  borderRadius: 3,
-                  paddingBlock: 3,
-                  color: "black",
-                  paddingInline: 20,
-                }}
-              >
-                cancel
-              </div>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="" style={{}}>
-        <>
-          <h3>Tasks - {todos.length}</h3>
-          {todos.length === 0 ? (
-            <h6>there's nothing to do :(</h6>
-          ) : (
-            <div>
-              <table
-                style={{
-                  width: 100,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
-                  // display: "r",
+                  borderColor: "#e0e0e055",
+                  marginBlock: 10,
+                  color: "white",
+                }}
+                type="text"
+                placeholder="What needs to be done"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: 10,
+                  gap: 15,
                 }}
               >
-                {todos.map((todo, index) => {
-                  return (
-                    <tr
-                      style={{
-                        backgroundColor: "#e0e0e011",
-                        borderRadius: 20,
-                        marginBottom: 5,
-                        paddingBlock: 5,
-                        paddingInline: 20,
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        wordWrap: "break-word",
-                        justifyContent: "center",
-                      }}
-                      key={index}
-                    >
-                      <div
-                        style={{
-                          width: 50,
-                          height: 50,
-                          display: "block",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={todo.completed}
-                          onChange={() => completeTask(index)}
-                          style={{ color: "#f276a1" }}
-                        />
-                      </div>
+                <DatePicker
+                  className="custom-datepicker"
+                  selected={date}
+                  onChange={(date) => setDate(date)}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Select a date"
+                  style={{
+                    backgroundColor: "#e0e0e022",
+                  }}
+                />
+                <select
+                  value={selectedUser}
+                  onChange={(e) => setSelectedUser(e.target.value)}
+                >
+                  <option value="">Assign To</option>
+                  {userList.map((user) => (
+                    <option key={user.email} value={user.email}>
+                      {user.email}
+                    </option>
+                  ))}
+                  <option value=" ">Not Assigned</option>
+                </select>
 
-                      <div
+                <div
+                  onClick={handleSubmit}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor: "#7fffd4",
+                    borderRadius: 3,
+                    paddingBlock: 3,
+                    color: "black",
+                    paddingInline: 20,
+                  }}
+                >
+                  {editIndex === -1 ? "Add" : "Update"}
+                </div>
+
+                <div
+                  onClick={() => setShowFields(false)}
+                  style={{
+                    cursor: "pointer",
+                    backgroundColor: "#ff6347",
+                    borderRadius: 3,
+                    paddingBlock: 3,
+                    color: "black",
+                    paddingInline: 20,
+                  }}
+                >
+                  cancel
+                </div>
+              </div>
+            </form>
+          </div>
+        )}
+
+        <div className="" style={{}}>
+          <>
+            <h3>Tasks - {todos.length}</h3>
+            {todos.length === 0 ? (
+              <h6>there's nothing to do :(</h6>
+            ) : (
+              <div>
+                <table
+                  style={{
+                    width: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    // display: "r",
+                  }}
+                >
+                  {todos.map((todo, index) => {
+                    return (
+                      <tr
                         style={{
+                          backgroundColor: "#e0e0e011",
+                          borderRadius: 20,
+                          marginBottom: 5,
+                          paddingBlock: 5,
+                          paddingInline: 20,
                           display: "flex",
                           flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "space-between",
-                          width: "100%",
-                          gap: 20,
+                          wordWrap: "break-word",
+                          justifyContent: "center",
                         }}
+                        key={index}
                       >
-                        <div>
-                          <div
-                            style={{
-                              fontSize: 20,
-                              width: "14em",
-                            }}
-                          >
-                            {todo.task}
-                          </div>
-                          <div style={{ color: "green" }}>
-                            {todo.date &&
-                              `${new Date(
-                                todo.date.toDate()
-                              ).toLocaleDateString()}`}
-                          </div>
-                          <div>Progress: {todo.progress}%</div>
+                        <div
+                          style={{
+                            width: 50,
+                            height: 50,
+                            display: "block",
+                          }}
+                        >
                           <input
-                            type="range"
-                            min={0}
-                            max={100}
-                            value={todo.progress}
-                            onChange={(e) =>
-                              updateTaskProgress(index, e.target.value)
-                            }
+                            type="checkbox"
+                            checked={todo.completed}
+                            onChange={() => completeTask(index)}
+                            style={{ color: "#f276a1" }}
                           />
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            width: "100%",
+                            gap: 20,
+                          }}
+                        >
                           <div>
-                            {todo.assignedTo ? (
-                              <div>Assigned: {todo.assignedTo}</div>
-                            ) : (
-                              <div>Assigned: Not Assigned</div>
-                            )}
+                            <div
+                              style={{
+                                fontSize: 20,
+                                width: "14em",
+                              }}
+                            >
+                              {todo.task}
+                            </div>
+                            <div style={{ color: "green" }}>
+                              {todo.date &&
+                                `${new Date(
+                                  todo.date.toDate()
+                                ).toLocaleDateString()}`}
+                            </div>
+                            <div>Progress: {todo.progress}%</div>
+                            <input
+                              type="range"
+                              min={0}
+                              max={100}
+                              value={todo.progress}
+                              onChange={(e) =>
+                                updateTaskProgress(index, e.target.value)
+                              }
+                            />
+                            <div>
+                              {todo.assignedTo ? (
+                                <div>Assigned: {todo.assignedTo}</div>
+                              ) : (
+                                <div>Assigned: Not Assigned</div>
+                              )}
+                            </div>
+
+                            {/* <div>Assigné: {isAssigned ? '' : 'Non'}</div> */}
                           </div>
 
-                          {/* <div>Assigné: {isAssigned ? '' : 'Non'}</div> */}
-                        </div>
-
-                        <div
-                          onClick={() => editTask(index)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <table
-                            style={{
-                              width: 100,
-                            }}
+                          <div
+                            onClick={() => editTask(index)}
+                            style={{ cursor: "pointer" }}
                           >
-                            <tr>
-                              <td
-                                style={{
-                                  display: "block",
-                                  margin: 10,
-                                }}
-                              >
-                                <ion-icon
-                                  name="create-outline"
-                                  size="large"
-                                  color={"#181820"}
-                                ></ion-icon>
-                              </td>
-                            </tr>
-                          </table>
-                        </div>
+                            <table
+                              style={{
+                                width: 100,
+                              }}
+                            >
+                              <tr>
+                                <td
+                                  style={{
+                                    display: "block",
+                                    margin: 10,
+                                  }}
+                                >
+                                  <ion-icon
+                                    name="create-outline"
+                                    size="large"
+                                    color={"#181820"}
+                                  ></ion-icon>
+                                </td>
+                              </tr>
+                            </table>
+                          </div>
 
-                        <div
-                          onClick={() => deleteTask(todo.id)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <ion-icon
-                            name="trash-outline"
-                            size="large"
-                            color={"#181820"}
-                          ></ion-icon>
+                          <div
+                            onClick={() => deleteTask(todo.id)}
+                            style={{ cursor: "pointer" }}
+                          >
+                            <ion-icon
+                              name="trash-outline"
+                              size="large"
+                              color={"#181820"}
+                            ></ion-icon>
+                          </div>
                         </div>
-                      </div>
-                    </tr>
-                  );
-                })}
-              </table>
-            </div>
-          )}
-        </>
+                      </tr>
+                    );
+                  })}
+                </table>
+              </div>
+            )}
+          </>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return navigate("/log");
+  }
 }
 
 export default Home;
